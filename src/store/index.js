@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import axios from 'axios';
-import { API_BASE_URL } from '../config';
+import { API_BASE_URL, NOT_IMAGE } from '../config';
 
 Vue.use(Vuex);
 
@@ -53,19 +53,17 @@ export default new Vuex.Store({
       return state.cartProducts.map(item => {
         const product = state.cartProductsData.find(p => p.product.id === item.productId).product;
 
-        let image= [];
-        for (let i = 0; i < product.colors.length; i++) {
-          if (product.colors[i].gallery != null) {
-            image.push(product.colors[i].gallery[0].file.url);
-          } else {
-            image.push('https://www.lionstroy.ru/published/publicdata/U70619SHOP/attachments/SC/products_pictures/nophoto.png');
+        const images = product.colors.map(c => {
+          if (c.gallery) {
+            return c.gallery[0].file.url;
           }
-        }
+          return NOT_IMAGE;
+        })
         return {
           ...item,
           product: {
             ...product,
-            image: image
+            image: images
           }
         }
       })

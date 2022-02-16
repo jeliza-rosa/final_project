@@ -178,7 +178,7 @@
 <script>
     import axios from 'axios';
     import { mapActions} from 'vuex';
-    import { API_BASE_URL } from '../config';
+    import { API_BASE_URL, NOT_IMAGE } from '../config';
 
     export default {
         data() {
@@ -206,14 +206,13 @@
             },
             images() {
                 if (this.productData) {
-                    let imagesData = [];
-                    for (let i = 0; i < this.product.colors.length; i++) {
-                        if (this.product.colors[i].gallery != null) {
-                            imagesData[i] = this.product.colors[i].gallery[0].file.url;
-                        } else {
-                            imagesData[i] = 'https://www.lionstroy.ru/published/publicdata/U70619SHOP/attachments/SC/products_pictures/nophoto.png';
-                        }
+                  const imagesData = this.product.colors.map(img => {
+                    if (img.gallery) {
+                      return img.gallery[0].file.url;
+                    } else {
+                      return NOT_IMAGE;
                     }
+                  })
                     return imagesData;
                 } else {
                     return [];
